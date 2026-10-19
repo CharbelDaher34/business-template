@@ -1,0 +1,18 @@
+# Logs
+logs
+*.log
+
+node_modules
+dist
+dist-ssr
+*.local
+openapi.json
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.sw?
+.tanstack

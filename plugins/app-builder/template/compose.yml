@@ -1,0 +1,87 @@
+# Local development stack for one app on a shared server.
+#
+# - Every container, volume and network is namespaced by COMPOSE_PROJECT_NAME.
+# - Only the frontend publishes a port (APP_PORT, on 127.0.0.1). The Vite dev
+#   server forwards /api (the API and /api/docs) to the backend, so the database
+#   and backend are never reachable from outside Docker.
+# - Do not add `container_name` or extra `ports:` anywhere.
+name: ${COMPOSE_PROJECT_NAME:?COMPOSE_PROJECT_NAME is not set in .env, see docs or ask Charbel}
+
+# Settings shared by the backend and the one-off prestart job.
+x-backend: &backend
+  image: ${COMPOSE_PROJECT_NAME}-backend
+  build: ./backend
+  env_file: .env
+  environment:
+    POSTGRES_HOST: db
+    HOME: /tmp
+  # Run as CONTAINER_UID/GID from .env, so files created in ./backend
+  # (migrations, caches) belong to you on the host.
+  user: "${CONTAINER_UID:?CONTAINER_UID is not set in .env}:${CONTAINER_GID:?CONTAINER_GID is not set in .env}"
+  volumes:
+    - ./backend:/app
+
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is not set in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is not set in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is not set in .env}
+    volumes:
+      - db-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # Runs on every start: migrations (alembic upgrade head), then seed data.
+  prestart:
+    <<: *backend
+    command: bash scripts/prestart.sh
+    depends_on:
+      db:
+        condition: service_healthy
+
+  backend:
+    <<: *backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      db:
+        condition: service_healthy
+      prestart:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/utils/health-check/')"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  frontend:
+    image: oven/bun:1.4
+    working_dir: /app
+    # Installs packages into ./frontend/node_modules, then starts the Vite dev server.
+    command: sh -c "bun install && bun run dev"
+    user: "${CONTAINER_UID:?CONTAINER_UID is not set in .env}:${CONTAINER_GID:?CONTAINER_GID is not set in .env}"
+    environment:
+      HOME: /tmp
+      BUN_INSTALL_CACHE_DIR: /app/node_modules/.cache/bun
+      # Used by vite.config.ts so hot reload works through SSH port forwarding.
+      APP_PORT: ${APP_PORT:?APP_PORT is not set, see docs or ask Charbel}
+      VITE_APP_NAME: ${APP_NAME:-My App}
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "127.0.0.1:${APP_PORT:?APP_PORT is not set, see docs or ask Charbel}:5173"
+    depends_on:
+      - backend
+
+volumes:
+  db-data:

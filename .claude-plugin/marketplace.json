@@ -1,0 +1,16 @@
+{
+  "name": "charbel-apps",
+  "owner": {
+    "name": "Charbel"
+  },
+  "metadata": {
+    "description": "Charbel's Claude Code plugins for building web apps on a shared server."
+  },
+  "plugins": [
+    {
+      "name": "app-builder",
+      "source": "./plugins/app-builder",
+      "description": "Build real web apps with Claude: interview, spec, screens, milestones, on a fixed FastAPI + React stack."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+# Secrets: only .env.example is committed
+.env
+
+# Dependencies
+node_modules/
+.venv/
+
+# Python caches
+__pycache__/
+*.pyc
+.ruff_cache/
+.pytest_cache/
+
+# Build output and generated scratch files
+frontend/dist/
+frontend/.tanstack/
+frontend/openapi.json

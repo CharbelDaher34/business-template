@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(docker compose *)",
+      "Bash(./scripts/check.sh*)",
+      "Bash(./scripts/generate-client.sh*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(ss -tln*)"
+    ],
+    "ask": [
+      "Bash(docker compose down -v*)",
+      "Bash(./scripts/reset-db.sh*)",
+      "Bash(git push*)",
+      "Bash(git reset --hard*)",
+      "Bash(git checkout -- *)"
+    ],
+    "deny": [
+      "Bash(sudo *)",
+      "Bash(su *)",
+      "Bash(systemctl *)",
+      "Bash(docker system prune*)",
+      "Bash(docker volume prune*)",
+      "Bash(docker network prune*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)"
+    ]
+  }
+}
