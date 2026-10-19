@@ -94,9 +94,8 @@ The hooks need `jq` (or `python3` as a fallback) and GNU `realpath`.
 
 ### The template
 
-`template/` is a stripped-down
-[full-stack-fastapi-template](https://github.com/fastapi/full-stack-fastapi-template):
-no Traefik, deployment, CI, email or Playwright. Backend in routers / services /
+`template/` is a FastAPI + React app skeleton for local development only:
+no deployment, CI, email or end-to-end tests. Backend in routers / services /
 models, login by email or username, idempotent `app/seed.py`, a single
 `compose.yml` where only the frontend publishes a port (`APP_PORT`, bound to
 127.0.0.1; Vite proxies `/api` and `/api/docs` to the backend), and
@@ -123,7 +122,9 @@ fill in the empty values and the `changethis` ones, then
    ```bash
    claude plugin validate plugins/app-builder
    ```
-4. Commit and push.
+4. Commit and push. Pushing is publishing: this GitHub repo *is* the
+   marketplace, so there's no separate store to upload to. Builders get the new
+   version from here (automatically if they turned on auto-update).
 
 What updates where:
 - **Skills, rules, references and hooks** update everywhere, in every app, on
@@ -152,11 +153,3 @@ flow applies. Test changes by piping sample hook JSON into the script:
 ```bash
 echo '{"tool_input":{"command":"sudo ls"},"cwd":"/tmp/x"}' | plugins/app-builder/hooks/guard-bash.sh
 ```
-
-### Upstream attribution
-
-The template is derived from
-[fastapi/full-stack-fastapi-template](https://github.com/fastapi/full-stack-fastapi-template)
-by Sebastián Ramírez, MIT License. Its license notice is kept in
-`plugins/app-builder/template/LICENSE-UPSTREAM`, and the attribution is repeated in
-[LICENSE](LICENSE).
