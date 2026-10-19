@@ -8,7 +8,7 @@ argument-hint: "short app name"
 # New app
 
 Set up a new app in the current folder, then run discovery with the builder.
-Follow the app-builder rules (plain English, one question at a time,
+Follow the app-builder rules (plain English, several questions at a time,
 AskUserQuestion for choices). Tell her briefly what you're doing at each step,
 without technical detail.
 
@@ -22,10 +22,27 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
    Claude Code in a new, empty folder (for example `mkdir my-app && cd my-app && claude`)
    and run /app-builder:new-app again."
 
-2. **Copy the template:** `cp -a "${CLAUDE_PLUGIN_ROOT}/template/." .`
+2. **Copy the template**, keeping any Claude Code settings already in the
+   folder (for example the app-builder plugin installed for this project only),
+   which the template's `.claude/settings.json` would otherwise overwrite:
+   ```bash
+   if [ -f .claude/settings.json ]; then mv .claude/settings.json .claude/settings.before-template.json; fi
+   cp -a "${CLAUDE_PLUGIN_ROOT}/template/." .
+   if [ -f .claude/settings.before-template.json ]; then
+     jq -s '.[0] * .[1]' .claude/settings.json .claude/settings.before-template.json > .claude/settings.merged.json &&
+       mv .claude/settings.merged.json .claude/settings.json && rm .claude/settings.before-template.json
+   fi
+   ```
 
-3. **App name.** If none was given, ask: "What should we call the app? A short
-   name is fine, you can change how it's displayed later."
+3. **Setup questions, together.** Ask what setup needs in one go:
+   - the app name, if none was given ("A short name is fine, you can change how
+     it's displayed later"),
+   - the first admin's email,
+   - the admin's username (offer one made from the email),
+   - the admin password: "Generate one for me (recommended)" or "I'll type it
+     into .env myself" (a clickable choice).
+   Use AskUserQuestion for the password choice and ask the open questions in
+   the same message.
 
 4. **Compose project name.** Slug of the app name: lowercase, letters, digits
    and dashes only (e.g. "Visit Log" → `visit-log`). Make it unique on the
@@ -46,10 +63,9 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
    Do this with shell commands (e.g. `sed -i`), so the secrets never appear in
    the chat. Never print `.env`.
 
-7. **First admin.** Ask for the admin's email, then a username (suggest one from
-   the email). Set `FIRST_ADMIN_EMAIL` and `FIRST_ADMIN_USERNAME` in `.env`.
-   For the password, ask her to choose (AskUserQuestion):
-   - "Generate one for me (recommended)": set `FIRST_ADMIN_PASSWORD` to
+7. **First admin**, from her step 3 answers. Set `FIRST_ADMIN_EMAIL` and
+   `FIRST_ADMIN_USERNAME` in `.env`. For the password:
+   - "Generate one for me": set `FIRST_ADMIN_PASSWORD` to
      `openssl rand -hex 12` output, via a shell command. Tell her it's on
      the `FIRST_ADMIN_PASSWORD` line of `.env` in the app folder, and that she
      can change it later in the app under Settings → Password.
@@ -80,7 +96,8 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
       --data-urlencode "password=$(grep '^FIRST_ADMIN_PASSWORD=' .env | cut -d= -f2-)"
     ```
     Expect `200`. Also check `http://localhost:<port>/` returns 200. If
-    something fails, use the fix-problem skill's approach before going on.
+    something fails, follow "When something is broken" in the rules and
+    `${CLAUDE_PLUGIN_ROOT}/references/troubleshooting.md` before going on.
 
 11. **Tell her how to open it**: "Your app is running on port <port>. Charbel
     will set up port forwarding for you; then open http://localhost:<port> and
@@ -95,6 +112,13 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
     description in `CLAUDE.md`. Show her the key points and get her **explicit
     approval** ("Does this describe your app? Anything to change?"). Mark it
     approved in the spec's status line.
+    - **Accounts:** the template lets anyone who can open the app sign
+      themselves up. If she said only an admin creates accounts, closing
+      sign-up (the "Sign up" link and page, and the `/users/signup` endpoint)
+      goes into milestone 1. Log the choice in DECISIONS.md.
+    - **Test data:** record in DECISIONS.md that the app holds test data while
+      she tries the idea out (`data_is_real` stays `false`), so later database
+      changes don't need to ask again.
 
 14. **Screens first?** Ask (AskUserQuestion): "Would you like to see the main
     screens first, with sample data, before I build the real thing?
@@ -108,4 +132,4 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
     something she can try in the browser. Write them in `docs/PROGRESS.md`
     (Milestones checklist and Next) and get her OK. Commit.
 
-16. **Start milestone 1** using the build-feature skill (`/app-builder:build-feature`).
+16. **Start milestone 1**, following "Handling any request" in the rules.

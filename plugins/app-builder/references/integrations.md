@@ -46,7 +46,8 @@ Keep working on everything that isn't blocked meanwhile.
   `docker compose exec backend uv add --no-sync <package>` and
   `docker compose up -d --build`. A frontend package:
   `docker compose exec frontend bun add <package>`. Log it in DECISIONS.md.
-- Update `services` in `.app-builder.json` and the services line in `CLAUDE.md`.
+- Update `services` in `.app-builder.json` and the services line in `CLAUDE.md`,
+  and log the choice, version and cost in DECISIONS.md.
 
 Specific guides: file uploads → `file-storage-rustfs.md`; AI features →
 `ai-pydantic-ai.md`.

@@ -42,6 +42,15 @@ The "items" feature is the canonical example. Copy its shape for every feature:
 - Routes raise `HTTPException` only for HTTP-level problems.
 - Error messages are plain English; the frontend shows them to users in a toast
   (`handleError` in `frontend/src/utils.ts`).
+- Watch out: the template's frontend treats every 401 **and 403** as "login
+  expired" and sends the user back to the login page (`handleApiError` in
+  `frontend/src/main.tsx`), and a bad token returns 403
+  (`get_current_user` in `backend/app/api/deps.py`). As soon as the app has
+  rules like "only managers can approve", a normal user hitting one of them
+  would be logged out. When you add the first such rule: make
+  `get_current_user` return 401 for a bad or missing token, make
+  `handleApiError` react to 401 only, and also hide buttons for actions the
+  user isn't allowed to do.
 
 ## Pagination
 
@@ -65,6 +74,22 @@ The "items" feature is the canonical example. Copy its shape for every feature:
 - Never hand-edit `frontend/src/client/` (generated) or `frontend/src/routeTree.gen.ts`.
 - Never leave dead code, commented-out code or unused files.
 
+## Trying the API from the shell
+
+Log in as the first admin without printing the password, then call the API
+through the app's port:
+
+```bash
+PORT=$(grep '^APP_PORT=' .env | cut -d= -f2)
+TOKEN=$(curl -s -X POST "http://localhost:$PORT/api/v1/login/access-token" \
+  --data-urlencode "username=$(grep '^FIRST_ADMIN_USERNAME=' .env | cut -d= -f2-)" \
+  --data-urlencode "password=$(grep '^FIRST_ADMIN_PASSWORD=' .env | cut -d= -f2-)" | jq -r .access_token)
+curl -s "http://localhost:$PORT/api/v1/items/" -H "Authorization: Bearer $TOKEN" | jq
+```
+
+To test a rule for normal users, create one through `POST /api/v1/users/`
+(as the admin) and log in as them the same way.
+
 ## Quality bar
 
 - `./scripts/check.sh` must pass: ruff (lint + format) and pytest on the backend,
@@ -76,7 +101,9 @@ The "items" feature is the canonical example. Copy its shape for every feature:
 
 ## Removing the example feature
 
-Once the app has its own first real feature, remove "items" completely: model,
-service, routes, router include, seed function, tests, frontend route,
-components, sidebar entry, and regenerate the client. Write a migration (or
-reset, per `database-changes.md`) that drops the table.
+Remove "items" as part of the app's first real feature (it's a pattern to copy,
+not part of her app): model, service, routes, router include, seed function
+(`seed_demo_items` and its call), smoke test, frontend route, components,
+sidebar entry, then regenerate the client. Drop the table with a migration
+(or a reset, per `database-changes.md`). The smoke test for the CRUD flow moves
+to the new feature.

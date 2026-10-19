@@ -13,9 +13,11 @@ Then reflect it back in two or three sentences and confirm:
 "So: a tool where your field team logs site visits, and you see a weekly summary
 per client. Did I get that right?"
 
-## 2. Business questions, one at a time
+## 2. Business questions
 
-Cover these, in roughly this order. Skip what she already answered.
+Cover these topics. Skip what she already answered. Ask several related
+questions together rather than one per message; use your judgment on how to
+group them.
 
 1. **Users and roles.** Who uses it? Are there different kinds of users who can
    do different things? ("Can a team member see other members' visits?")
@@ -29,10 +31,14 @@ Cover these, in roughly this order. Skip what she already answered.
    someone made a mistake in a submitted report?")
 6. **First version vs later.** ("If we could only ship three things first, which
    three?")
-7. **First users and admin.** Who will use it first, and who manages users?
+7. **First users and admin.** Who will use it first, who manages users, and
+   how do people get an account: do they sign themselves up, or does an admin
+   create accounts for them?
 
-Use AskUserQuestion with clickable options when the answer has a few likely
-choices. Use open questions when it doesn't.
+Use AskUserQuestion with clickable options for questions that have a few
+likely answers, and ask open questions in the same message, so she can answer
+several in one reply. Tell her short answers are fine and she can skip anything
+she's unsure about.
 
 ## 3. Aim for alignment, surface gaps
 
@@ -46,9 +52,11 @@ choices. Use open questions when it doesn't.
 
 - Stop when there's enough to build a first version. Details can come later,
   milestone by milestone.
+- Ask follow-ups only where her answers left real gaps or contradictions.
 - If she's unsure, make a reasonable guess and record it under "Open
   assumptions" in the spec, marked clearly as an assumption.
-- Keep the pace friendly: summarize every few answers so she sees progress.
+- Keep the pace friendly: every so often, summarize what you learned so she
+  sees progress.
 
 ## 5. Good vs bad questions
 

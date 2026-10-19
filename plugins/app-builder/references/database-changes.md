@@ -1,54 +1,46 @@
-# Database changes: reset or migrate?
+# Database changes
 
-Whenever a model in `backend/app/models/` changes (new table, new or renamed
-column, changed type), decide how the database follows.
+When a model in `backend/app/models/` changes, update the database right away:
+the backend reloads at once and errors until the database matches the models.
 
-## 1. Check whether the data is real
+## Test data (`data_is_real` is `false` in `.app-builder.json`)
 
-Read `data_is_real` in `.app-builder.json`.
+This is the normal case while she's trying an idea out. If DECISIONS.md
+doesn't record yet that the app holds test data, ask her once ("Is the data in
+the app right now real data you'd be upset to lose?") and log the answer.
 
-- `true` → go to **Real data** below. Never reset.
-- `false` → ask her, in business terms:
-  "Is the data in the app right now real data you'd be upset to lose?"
-  (Use AskUserQuestion: "No, it's test data" / "Yes, keep it".)
+1. Change the model(s) and update `backend/app/seed.py` to match.
+2. Generate a migration:
+   `docker compose exec backend alembic revision --autogenerate -m "<what changed>"`
+3. Apply it, keeping her test data: `docker compose exec backend alembic upgrade head`.
+   If it fails, nothing changed (migrations are all-or-nothing).
+4. If it failed because existing rows don't fit (typically a new required
+   column: "contains null values"), get her OK in one line ("This change needs
+   a fresh database: the test data is replaced with the demo data. OK?"), then
+   `./scripts/reset-db.sh --yes`. It only touches this app's database.
 
-## 2. Test data (her answer: No)
+## Real data (`data_is_real` is `true`)
 
-The database can be rebuilt from scratch, so keep the migration history simple.
+**Becoming real** (she says the app is now used for real): set
+`"data_is_real": true` in `.app-builder.json` and `DATA_IS_REAL=true` in `.env`,
+remove demo seed rows from `seed.py` (e.g. `seed_demo_items` and its call, or
+they come back on every start), and log it in DECISIONS.md. This is permanent:
+`reset-db.sh` refuses to run from then on.
 
-1. Change the model(s).
-2. Update the migration history. While nothing is real, it's fine to keep one
-   tidy migration per table group: either edit the latest migration or
-   regenerate it:
-   `docker compose exec backend alembic revision --autogenerate -m "<what changed>"`.
-   Review the generated file in `backend/app/alembic/versions/` before using it.
-3. Update `backend/app/seed.py` so the seed data matches the new models.
-4. Explain what will happen ("All the test data in the app is deleted and the
-   demo data comes back.") and get her yes.
-5. Run `./scripts/reset-db.sh --yes`. It stops this app, deletes only this app's
-   database volume, and starts again, so migrations and seed run fresh.
-6. Check `docker compose logs prestart` for errors.
+**Every change** must keep all rows:
+1. Change the model(s), then autogenerate the migration as above.
+2. Review the file before applying it:
+   - A new required column needs a value for existing rows: add
+     `server_default=...` to its `sa.Column(...)`; autogenerate never does.
+   - Autogenerate can't see renames (it drops and re-adds the column, losing
+     data): write `op.alter_column(..., new_column_name=...)` instead.
+3. Apply with `alembic upgrade head`; if it fails, fix the file and apply again.
+4. Count rows before and after to confirm nothing was lost.
 
-## 3. Real data (her answer: Yes, or data_is_real is already true)
-
-1. The first time: set `"data_is_real": true` in `.app-builder.json` and
-   `DATA_IS_REAL=true` in `.env`. This is permanent: log it in DECISIONS.md.
-   `reset-db.sh` refuses to run from now on.
-2. From now on, every change gets a proper Alembic migration that keeps all rows:
-   1. Change the model(s).
-   2. Autogenerate: `docker compose exec backend alembic revision --autogenerate -m "<what changed>"`.
-   3. Review the file carefully. Autogenerate can't see renames (it drops and
-      re-adds the column, losing data): write `op.alter_column(..., new_column_name=...)`
-      instead. New non-null columns on existing rows need a `server_default`
-      or a data step.
-   4. Apply: `docker compose exec backend alembic upgrade head` (it also runs
-      on every start).
-   5. Check the data survived (count rows before and after).
-3. Never reset, never `docker compose down -v`, never delete migrations that
-   have been applied to real data.
+Never reset, run `docker compose down -v`, or delete applied migrations once
+the data is real.
 
 ## Always
 
-- Keep `backend/app/seed.py` in step with the models. Seed functions only
-  insert missing rows, so they're safe on real data too.
-- Commit the model, migration and seed changes together.
+Seed functions only insert missing rows. Commit the model, migration and seed
+changes together.

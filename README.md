@@ -43,7 +43,7 @@ mkdir my-app && cd my-app && claude
 
 Then type `/app-builder:new-app` followed by a short name for your app, for
 example `/app-builder:new-app visit log`. Claude sets everything up, starts
-the app, and then asks you about your idea, one question at a time.
+the app, and then asks you about your idea, several questions at a time.
 
 ### 5. Continue later
 
@@ -77,11 +77,17 @@ plugins/app-builder/
   hooks/hooks.json                  SessionStart + PreToolUse(Bash)
   hooks/session-start.sh            injects rules/app-rules.md inside app projects
   hooks/guard-bash.sh               blocks / asks about dangerous shell commands
-  rules/app-rules.md                always-on rules (keep it short: costs context every session)
-  references/*.md                   detailed procedures the skills point to
-  skills/<name>/SKILL.md            /app-builder:new-app, build-feature, add-integration, fix-problem
+  rules/app-rules.md                always-on rules: how Claude works with her (keep it short)
+  references/*.md                   detailed guides the rules and new-app point to
+  skills/new-app/SKILL.md           /app-builder:new-app, the one skill (setup + discovery)
   template/                         the app skeleton copied into each new app
 ```
+
+How it's organised: the always-on rules carry the behaviour for everything she
+asks (any request, something broken, outside services), so it doesn't depend on
+Claude picking the right skill. The details live in `references/`, which Claude
+reads when relevant. `new-app` is the only skill, because starting an app is a
+one-time procedure she runs on purpose.
 
 Everything the plugin needs at runtime must live under `plugins/app-builder/`:
 only that folder is copied into the install cache. A `CLAUDE.md` at the plugin
