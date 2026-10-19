@@ -20,7 +20,7 @@ You only need to be able to log in to the server and run `claude`.
 Inside Claude Code, type these two commands:
 
 ```
-/plugin marketplace add <GITHUB_USER>/app-builder
+/plugin marketplace add CharbelDaher34/business-template
 ```
 
 ```
