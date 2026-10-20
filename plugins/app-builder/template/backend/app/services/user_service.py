@@ -1,6 +1,6 @@
 import uuid
 
-from sqlmodel import Session, col, func, select
+from sqlmodel import Session, col, select
 
 from app.core.security import get_password_hash, verify_password
 from app.models import User, UserCreate, UserRegister, UserUpdate, UserUpdateMe
@@ -44,14 +44,9 @@ def get_user(*, session: Session, user_id: uuid.UUID) -> User:
     return user
 
 
-def list_users(
-    *, session: Session, skip: int = 0, limit: int = 100
-) -> tuple[list[User], int]:
-    count = session.exec(select(func.count()).select_from(User)).one()
-    statement = (
-        select(User).order_by(col(User.created_at).desc()).offset(skip).limit(limit)
-    )
-    return list(session.exec(statement).all()), count
+def list_users(*, session: Session) -> list[User]:
+    statement = select(User).order_by(col(User.created_at).desc())
+    return list(session.exec(statement).all())
 
 
 def _ensure_unique(

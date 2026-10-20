@@ -21,6 +21,7 @@ This file only holds what is specific to this app.
 - Logs: `docker compose logs -f backend` (or `frontend`, `prestart`, `db`)
 - Before saying anything is done: `./scripts/check.sh`
 - After changing API routes or schemas: `./scripts/generate-client.sh`
+- Save a secret in `.env` (she runs it herself, in her own terminal): `./scripts/set-secret.sh NAME`
 - API docs: http://localhost:{{APP_PORT}}/api/docs
 
 ## Where things are

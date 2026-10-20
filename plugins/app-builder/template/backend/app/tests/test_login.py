@@ -36,4 +36,4 @@ def test_unauthorized_access_is_rejected(client: TestClient) -> None:
     r = client.get(
         f"{settings.API_V1_STR}/items/", headers={"Authorization": "Bearer not-a-token"}
     )
-    assert r.status_code == 403
+    assert r.status_code == 401

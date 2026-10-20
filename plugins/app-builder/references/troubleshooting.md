@@ -20,8 +20,8 @@
 - **Everything is down after the server restarted:** apps don't restart on
   their own. `docker compose up -d`.
 - **Sent back to the login page unexpectedly:** the login expired (after 8
-  days), or the app hit a 403 on a "not allowed" rule; see the 401/403 note
-  under "Error handling" in `conventions.md`.
+  days), or the account was deactivated or deleted. Only a 401 does this (see
+  "Error handling" in `conventions.md`).
 - **Admin can't log in:** they can use the email or the username. Changing
   `FIRST_ADMIN_PASSWORD` in `.env` later does nothing: it's only used when the
   admin is first created. Set a new password from the admin page instead.

@@ -1,6 +1,6 @@
 {
   "name": "app-builder",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Build real web apps with Claude on a shared server: discovery interview, spec, screens first, milestones, on a fixed FastAPI + React + Postgres stack with safety guards.",
   "author": { "name": "Charbel" }
 }

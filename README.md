@@ -15,6 +15,11 @@ milestones you can try in the browser. Every app uses the same proven stack
 Charbel has prepared the server for you with Docker, Claude Code and `jq`.
 You only need to be able to log in to the server and run `claude`.
 
+(Charbel: also set `"permissions": {"defaultMode": "auto"}` in her
+`~/.claude/settings.json`, so she isn't asked to approve each command and file
+edit. It must be the user file: Claude Code ignores `"auto"` in an app's own
+`.claude/settings.json`, so the template can't ship it.)
+
 ### 2. Install the plugin
 
 Inside Claude Code, type these two commands:
@@ -57,7 +62,14 @@ Each app has its own port number, which Claude tells you (for example 40000).
 Charbel explains how to set up port forwarding once; after that you open
 `http://localhost:<port>` in your browser.
 
-### 7. When Claude says "ask Charbel"
+### 7. When Claude needs a key or password
+
+Claude never asks you to type a key or password into the chat. It gives you
+one line to paste into a second terminal window on the server, for example
+`cd ~/my-app && ./scripts/set-secret.sh ANTHROPIC_API_KEY`. Paste the key when
+asked (it isn't shown on screen), then tell Claude it's done.
+
+### 8. When Claude says "ask Charbel"
 
 Some technical decisions need Charbel. Claude writes them in
 `docs/QUESTIONS_FOR_CHARBEL.md` in your app's folder. Send Charbel that entry
@@ -105,7 +117,9 @@ no deployment, CI, email or end-to-end tests. Backend in routers / services /
 models, login by email or username, idempotent `app/seed.py`, a single
 `compose.yml` where only the frontend publishes a port (`APP_PORT`, bound to
 127.0.0.1; Vite proxies `/api` and `/api/docs` to the backend), and
-`scripts/check.sh`, `scripts/generate-client.sh`, `scripts/reset-db.sh`.
+`scripts/check.sh`, `scripts/generate-client.sh`, `scripts/reset-db.sh` and
+`scripts/set-secret.sh` (the builder saves a secret in `.env` without it
+reaching the chat).
 
 `CONTAINER_UID`/`CONTAINER_GID` in `.env` decide which user the containers run
 as, so files they write into the app folder belong to the builder: her own ids

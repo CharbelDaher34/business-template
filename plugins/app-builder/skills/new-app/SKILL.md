@@ -1,6 +1,6 @@
 ---
 name: new-app
-description: Start a brand-new web app in this empty folder. Copies the app-builder template, picks the app's port, sets up the database and the first admin login, starts the app, then interviews you about your idea, writes the spec and plans the milestones. Run it as /app-builder:new-app followed by a short app name.
+description: Start a new web app in this empty folder: set it up and run it, then interview you, write the spec and plan milestones.
 disable-model-invocation: true
 argument-hint: "short app name"
 ---
@@ -8,9 +8,12 @@ argument-hint: "short app name"
 # New app
 
 Set up a new app in the current folder, then run discovery with the builder.
-Follow the app-builder rules (plain English, several questions at a time,
-AskUserQuestion for choices). Tell her briefly what you're doing at each step,
-without technical detail.
+
+**First, read `${CLAUDE_PLUGIN_ROOT}/rules/app-rules.md` and follow it for the
+rest of this conversation.** Those rules load on their own in later sessions,
+but not in this one: the folder wasn't an app yet when the session started.
+The guides they mention under `references/` are in `${CLAUDE_PLUGIN_ROOT}/references/`.
+Tell her briefly what you're doing at each step, without technical detail.
 
 App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
 
@@ -34,15 +37,15 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
    fi
    ```
 
-3. **Setup questions, together.** Ask what setup needs in one go:
+3. **Setup questions, together.** First check `git config user.name` and
+   `git config user.email`. Then ask what setup needs in one go:
    - the app name, if none was given ("A short name is fine, you can change how
      it's displayed later"),
    - the first admin's email,
    - the admin's username (offer one made from the email),
-   - the admin password: "Generate one for me (recommended)" or "I'll type it
-     into .env myself" (a clickable choice).
-   Use AskUserQuestion for the password choice and ask the open questions in
-   the same message.
+   - if either git value is empty: her name and email, used to sign each saved
+     version of the app (offer the admin email).
+   Don't ask for the admin password here: she sets it herself in step 7.
 
 4. **Compose project name.** Slug of the app name: lowercase, letters, digits
    and dashes only (e.g. "Visit Log" → `visit-log`). Make it unique on the
@@ -51,7 +54,8 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
    If taken, add `-2`, `-3`, ...
 
 5. **Port.** Pick `APP_PORT` by following `${CLAUDE_PLUGIN_ROOT}/references/ports.md`
-   (registry, `ss`, docker; lowest free port ≥ 40000; record it).
+   (registry, `ss`, docker; the first free one of 40000, 40020, 40040, …;
+   record it).
 
 6. **Create `.env`** from `.env.example` (`cp .env.example .env`), then set:
    - `APP_NAME="<App name>"`, `COMPOSE_PROJECT_NAME=<slug>`, `APP_PORT=<port>`
@@ -64,13 +68,12 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
    the chat. Never print `.env`.
 
 7. **First admin**, from her step 3 answers. Set `FIRST_ADMIN_EMAIL` and
-   `FIRST_ADMIN_USERNAME` in `.env`. For the password:
-   - "Generate one for me": set `FIRST_ADMIN_PASSWORD` to
-     `openssl rand -hex 12` output, via a shell command. Tell her it's on
-     the `FIRST_ADMIN_PASSWORD` line of `.env` in the app folder, and that she
-     can change it later in the app under Settings → Password.
-   - "I'll type it into .env myself": tell her exactly which line to edit, and
-     wait until she says it's done. (Must be at least 8 characters.)
+   `FIRST_ADMIN_USERNAME` in `.env`. She chooses the password and saves it
+   with the set-secret script in her own terminal window (see "Secrets" in the
+   rules). Give her the exact line,
+   `cd <app folder> && ./scripts/set-secret.sh FIRST_ADMIN_PASSWORD`, say it
+   needs at least 8 characters and that she can change it later in the app
+   under Settings → Password, and wait until she says it's done.
 
 8. **Fill in the placeholders.**
    - `CLAUDE.md`: `{{APP_NAME}}`, `{{APP_PORT}}`, `{{COMPOSE_PROJECT_NAME}}`,
@@ -80,8 +83,8 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
      YYYY-MM-DD) and `{{APP_PORT}}`.
    - `.app-builder.json`: `app_name`, `app_port` (a number).
 
-9. **Git.** `git init` (if there's no `.git` yet). If `git config user.name` is
-   empty, ask for her name and email and set them for this repository only
+9. **Git.** `git init` (if there's no `.git` yet). If you asked for her name
+   and email in step 3, set them for this repository only
    (`git config user.name ...`, `git config user.email ...`). Then
    `git add -A` and `git commit -m "Start <App name> from the app-builder template"`.
    Check `git status` shows `.env` is NOT committed.
@@ -102,7 +105,7 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
 11. **Tell her how to open it**: "Your app is running on port <port>. Charbel
     will set up port forwarding for you; then open http://localhost:<port> and
     log in with <admin email or username> and the password from step 7.
-    Please tell Charbel your app uses port <port>." Log the port in DECISIONS.md.
+    Please tell Charbel your app uses port <port>."
 
 ## Part 2: discovery
 

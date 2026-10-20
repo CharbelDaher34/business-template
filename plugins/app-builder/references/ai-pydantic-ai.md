@@ -17,7 +17,8 @@ your recommendation, and keep building everything else meanwhile.
 - `docker compose exec backend uv add --no-sync pydantic-ai-slim[<provider>]`
   (e.g. `[anthropic]`), then `docker compose up -d --build`. Log the version
   in DECISIONS.md.
-- Settings in `backend/app/core/config.py`, values in `.env` (she adds the key):
+- Settings in `backend/app/core/config.py`, values in `.env` (you set
+  `AI_MODEL`; she saves the key with `set-secret.sh`):
   ```
   # AI (model chosen with Charbel, see DECISIONS.md)
   AI_MODEL=

@@ -24,7 +24,7 @@
 3. Build it following `references/conventions.md`. Copy the "items" example's shape; remove "items" as part of the first real feature.
 4. If a model changed, update the database right away: autogenerate a migration and apply it (`references/database-changes.md`). The app errors until you do.
 5. If the API changed, run `./scripts/generate-client.sh`.
-6. Run `./scripts/check.sh`, and actually try it: API calls through the app's port, the logs, the page.
+6. Run `./scripts/check.sh`, and actually try it: API calls through the app's port, the logs, and the page. If you have the built-in browser, open http://localhost:<port> and click through the change yourself (it reaches the app through her port forwarding, like her own browser). If it shows the login page, ask her to log in there once; it stays logged in.
 7. Tell her exactly what to open and click, and one thing to try that shows a rule works.
 8. Commit with a plain-English message; update PROGRESS.md and DECISIONS.md.
 
@@ -55,8 +55,7 @@ The server is shared with other people and their apps.
 - A safety check blocks dangerous commands. If it blocks something, explain why in plain words and find another way, or write a Charbel question. Never try to work around it.
 
 ## Ports
-- Only the frontend publishes a port: `APP_PORT` from `.env`, 40000 or higher, picked with `references/ports.md`.
-- Tell her: "This app uses port X. Please let Charbel know." Log it in DECISIONS.md. Never change an app's port without asking her.
+- Only the frontend publishes a port: `APP_PORT` in `.env`, picked once with `references/ports.md`. Never change it without asking her.
 
 ## Deciding things
 1. Derive technical choices from what the app needs.
@@ -73,8 +72,8 @@ The server is shared with other people and their apps.
 - Git is her undo button. If she says "go back to the last working version", use git safely (prefer `git revert` or a new branch over rewriting history) and explain what happens first.
 
 ## Secrets
-- API keys and passwords go in `.env`, which she edits herself. Never ask her to paste a secret into the chat; tell her which line to add.
-- Only edit `.env.example` (empty or placeholder values). Never edit `.env`, except: while new-app creates it, to add randomly generated internal passwords (e.g. file storage keys), and to set `DATA_IS_REAL=true`.
+- API keys and passwords go in `.env`. Never ask her to paste a secret into the chat. She saves each one herself, in her own terminal window, with `./scripts/set-secret.sh NAME` (it refuses to run through you): give her the exact line, `cd <app folder> && ./scripts/set-secret.sh NAME`, and restart the app when she says it's done.
+- Edit `.env.example` freely (empty or placeholder values only). Edit `.env` only to write it during new-app, to add randomly generated internal passwords (e.g. file storage keys), and to add or change settings that aren't secrets (e.g. `AI_MODEL`, `DATA_IS_REAL=true`). Never print `.env`.
 
 ## Where things are
 - Guides in the plugin's `references/` folder (path printed below): conventions, database-changes, troubleshooting, integrations, file-storage-rustfs, ai-pydantic-ai, ports, interview-guide. Read the relevant one before acting.

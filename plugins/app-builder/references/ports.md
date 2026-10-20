@@ -1,7 +1,7 @@
 # Picking APP_PORT
 
 Each app publishes exactly one port on the shared server: the frontend's
-`APP_PORT`, 40000 or higher. Pick it like this.
+`APP_PORT`, one of 40000, 40020, 40040, … (steps of 20). Pick it like this.
 
 1. **Read the builder's port registry** `~/.app-builder/ports.json`. Create it if
    it's missing:
@@ -21,15 +21,15 @@ Each app publishes exactly one port on the shared server: the frontend's
    docker ps -a --format '{{.Ports}}' | grep -oE ':[0-9]+->' | tr -d ':->' | sort -un
    ```
 
-4. **Pick the lowest free port ≥ 40000** that is in none of the three lists.
+4. **Pick the first free port of 40000, 40020, 40040, …** (steps of 20, never
+   the ports in between) that is in none of the three lists. Example: 40000 and
+   40020 are taken, so use 40040.
 
 5. **Record it**:
    - in the registry, under the port, with the app name and folder,
    - in `.env` (`APP_PORT=<port>`),
    - in `.app-builder.json` (`"app_port": <port>`),
    - in `CLAUDE.md` and `docs/DECISIONS.md`.
-
-   Then tell her: "This app uses port X. Please let Charbel know."
 
 6. **Never change the port of an existing app** without asking her first (her
    port forwarding and bookmarks depend on it).

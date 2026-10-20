@@ -370,27 +370,9 @@ export type loginTestTokenResponse = loginTestTokenResponses[keyof loginTestToke
 export type usersReadUsersData = {
     body?: never;
     path?: never;
-    query?: {
-        /**
-         * Skip
-         */
-        skip?: number;
-        /**
-         * Limit
-         */
-        limit?: number;
-    };
+    query?: never;
     url: '/api/v1/users/';
 };
-
-export type usersReadUsersErrors = {
-    /**
-     * Validation Error
-     */
-    422: HTTPValidationError;
-};
-
-export type usersReadUsersError = usersReadUsersErrors[keyof usersReadUsersErrors];
 
 export type usersReadUsersResponses = {
     /**
@@ -644,27 +626,9 @@ export type utilsHealthCheckResponse = utilsHealthCheckResponses[keyof utilsHeal
 export type itemsReadItemsData = {
     body?: never;
     path?: never;
-    query?: {
-        /**
-         * Skip
-         */
-        skip?: number;
-        /**
-         * Limit
-         */
-        limit?: number;
-    };
+    query?: never;
     url: '/api/v1/items/';
 };
-
-export type itemsReadItemsErrors = {
-    /**
-     * Validation Error
-     */
-    422: HTTPValidationError;
-};
-
-export type itemsReadItemsError = itemsReadItemsErrors[keyof itemsReadItemsErrors];
 
 export type itemsReadItemsResponses = {
     /**

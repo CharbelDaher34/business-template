@@ -42,24 +42,11 @@ The "items" feature is the canonical example. Copy its shape for every feature:
 - Routes raise `HTTPException` only for HTTP-level problems.
 - Error messages are plain English; the frontend shows them to users in a toast
   (`handleError` in `frontend/src/utils.ts`).
-- Watch out: the template's frontend treats every 401 **and 403** as "login
-  expired" and sends the user back to the login page (`handleApiError` in
-  `frontend/src/main.tsx`), and a bad token returns 403
-  (`get_current_user` in `backend/app/api/deps.py`). As soon as the app has
-  rules like "only managers can approve", a normal user hitting one of them
-  would be logged out. When you add the first such rule: make
-  `get_current_user` return 401 for a bad or missing token, make
-  `handleApiError` react to 401 only, and also hide buttons for actions the
-  user isn't allowed to do.
-
-## Pagination
-
-- List endpoints take `skip` and `limit` (default 100) and return
-  `{"data": [...], "count": total}` (see `ItemsPublic`).
-- The service returns `(rows, count)`; the route builds the `...Public` schema.
-- The frontend table (`components/Common/DataTable.tsx`) pages through what it
-  loaded. For lists that can grow past a few hundred rows, pass `skip`/`limit`
-  from the page instead.
+- A 401 only means "log in again": the frontend sends the user back to the
+  login page (`handleApiError` in `frontend/src/main.tsx`), so never use it
+  for business rules. A user breaking a permission rule ("only managers can
+  approve") gets a 403 (`PermissionDeniedError`), shown as a message. Also
+  hide buttons for actions the user isn't allowed to do.
 
 ## UI
 

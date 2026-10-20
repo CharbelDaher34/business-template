@@ -24,13 +24,13 @@ router = APIRouter(prefix="/users", tags=["users"])
     dependencies=[Depends(get_current_active_superuser)],
     response_model=UsersPublic,
 )
-def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
+def read_users(session: SessionDep) -> Any:
     """
     Retrieve users.
     """
-    users, count = user_service.list_users(session=session, skip=skip, limit=limit)
+    users = user_service.list_users(session=session)
     return UsersPublic(
-        data=[UserPublic.model_validate(user) for user in users], count=count
+        data=[UserPublic.model_validate(user) for user in users], count=len(users)
     )
 
 

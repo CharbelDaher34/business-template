@@ -7,7 +7,8 @@ not a form to fill in.
 ## 1. Let her describe it freely
 
 Start open: "Tell me about the app you have in mind. What problem does it solve,
-and for whom?" Don't interrupt with questions while she explains.
+and for whom?" Ask only this in your first message; the specific questions in
+section 2 come after she has described it.
 
 Then reflect it back in two or three sentences and confirm:
 "So: a tool where your field team logs site visits, and you see a weekly summary

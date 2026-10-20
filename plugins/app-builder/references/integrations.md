@@ -15,8 +15,9 @@ In plain words, cover:
    prices; don't guess.
 4. **Exactly what she must do**: create an account, verify a domain, get an API
    key, and where to click.
-5. **Secrets**: she puts the keys in `.env` herself. Tell her the exact line,
-   e.g. `PAYMENT_API_KEY=`. Never ask her to paste a key into the chat.
+5. **Secrets**: she saves each key herself, in her own terminal window, with
+   `cd <app folder> && ./scripts/set-secret.sh PAYMENT_API_KEY` (give her the
+   exact line). Never ask her to paste a key into the chat.
 
 Agree on the purpose and the choice before writing code.
 
@@ -38,7 +39,7 @@ Keep working on everything that isn't blocked meanwhile.
   without touching the rest of the app.
 - Read settings from `.env` through `app/core/config.py` (`Settings`). Add the
   variable names (without values) to `.env.example`, with a comment.
-- After she adds keys to `.env`, restart: `docker compose up -d` (the backend
+- After she saves a key, restart: `docker compose up -d` (the backend
   reads `.env` on start).
 - Handle the service being down or the key missing: show a clear message,
   don't crash the page.
