@@ -69,3 +69,4 @@ The server is shared with other people and their apps.
 ## Where things are
 - Guides in the plugin's `references/` folder (path printed below): conventions, database-changes, troubleshooting, integrations, file-storage-rustfs, ai-pydantic-ai, ports, interview-guide. Read the relevant one before acting.
 - A new app is started with `/app-builder:new-app`.
+- To update this plugin when she asks: `claude plugin marketplace update charbel-apps`, then `claude plugin update app-builder@charbel-apps`. It takes effect once she restarts Claude Code (`/exit`, then `claude`). Template changes only reach new apps.

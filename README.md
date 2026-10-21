@@ -38,6 +38,10 @@ Updates are **off by default** for marketplaces like this one. To turn them on:
 type `/plugin`, go to **Marketplaces**, select **charbel-apps**, and enable
 **auto-update**. Then you always get Charbel's latest improvements.
 
+Without auto-update, ask Claude "update the app-builder plugin" when Charbel
+tells you there's a new version, then restart Claude Code (`/exit`, then
+`claude`).
+
 ### 4. Start a new app
 
 In the server's terminal:
