@@ -69,7 +69,19 @@ one line to paste into a second terminal window on the server, for example
 `cd ~/my-app && ./scripts/set-secret.sh ANTHROPIC_API_KEY`. Paste the key when
 asked (it isn't shown on screen), then tell Claude it's done.
 
-### 8. When Claude says "ask Charbel"
+### 8. Learning how your app works
+
+Claude works with you like a senior engineer on your team, and part of that
+is helping you understand how your app and software in general work: the big
+picture, the flows, the logic, how the data moves, and the technical words
+for all of it. Ask anything, the way you'd ask a developer ("what's the flow
+here?", "how does the data move?", "draw me a mindmap of the app"), and say
+if you want more or less detail.
+
+`docs/HOW_IT_WORKS.md` in your app's folder is your map of the app, kept up to
+date, with a glossary of the terms you've learned.
+
+### 9. When Claude says "ask Charbel"
 
 Some technical decisions need Charbel. Claude writes them in
 `docs/QUESTIONS_FOR_CHARBEL.md` in your app's folder. Send Charbel that entry
@@ -100,6 +112,13 @@ asks (any request, something broken, outside services), so it doesn't depend on
 Claude picking the right skill. The details live in `references/`, which Claude
 reads when relevant. `new-app` is the only skill, because starting an app is a
 one-time procedure she runs on purpose.
+
+How the instructions are written: precise where precision matters (the shared
+server, secrets, ports, deleting data, the fixed stack, setup steps, database
+changes), and goals plus reasons everywhere else (how Claude talks with her,
+teaches her, interviews her, plans and builds). Scripts, fixed phrasings and
+worked examples make the conversation feel robotic and don't generalise to
+what actually happens, so keep those parts short and leave the how to Claude.
 
 Everything the plugin needs at runtime must live under `plugins/app-builder/`:
 only that folder is copied into the install cache. A `CLAUDE.md` at the plugin

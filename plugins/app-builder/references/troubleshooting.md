@@ -4,6 +4,10 @@
 
 - `docker compose ps`: is every service running, and the backend healthy?
 - `docker compose logs --tail=100 backend` (or `frontend`, `prestart`, `db`).
+  The backend logs every request, every refused action with the user and the
+  reason, invalid input, crashes with a traceback, and whatever the services
+  log (see "Logging" in `conventions.md`). If the logs can't tell you what
+  happened, add the log line that would have, as part of the fix.
 - Call the API the page uses through the app's port (see "Trying the API from
   the shell" in `conventions.md`).
 - Never print `.env`. To see whether a value is set without showing it:

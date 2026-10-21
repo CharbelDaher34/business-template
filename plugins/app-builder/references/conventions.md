@@ -48,6 +48,32 @@ The "items" feature is the canonical example. Copy its shape for every feature:
   approve") gets a 403 (`PermissionDeniedError`), shown as a message. Also
   hide buttons for actions the user isn't allowed to do.
 
+## Logging
+
+Logs are how you find out what happened when something goes wrong
+(`docker compose logs backend`). The template already logs one line per
+request (uvicorn), every refused action with the user and the reason, every
+invalid input (which fields, never the values), and crashes with a traceback.
+
+- In services, log what you'd want to know when debugging: meaningful events
+  and decisions (something created or changed, a status moving, a rule
+  refusing, a calculation's key inputs) and every call to an outside service
+  with its outcome. Not every function call.
+- `logger = logging.getLogger(__name__)` at the top of the module. `info` for
+  events, `warning` for something odd the app recovered from, `exception`
+  inside an `except` for failures (it adds the traceback).
+- Include the ids that let you follow a thread (which user, which record).
+- Never log passwords, tokens, API keys, or personal details beyond an id or
+  username.
+
+## Data
+
+- Dates and times: store them in UTC (timezone-aware), show them in the
+  user's time zone.
+- Money: `Decimal` (or integer cents), never `float`.
+- Rules that are about the data itself (required, unique, must point to an
+  existing record) also go in the database as constraints, not only in code.
+
 ## UI
 
 - Use shadcn/ui components (`frontend/src/components/ui/`) before writing custom UI.

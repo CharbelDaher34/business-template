@@ -13,7 +13,7 @@ Set up a new app in the current folder, then run discovery with the builder.
 rest of this conversation.** Those rules load on their own in later sessions,
 but not in this one: the folder wasn't an app yet when the session started.
 The guides they mention under `references/` are in `${CLAUDE_PLUGIN_ROOT}/references/`.
-Tell her briefly what you're doing at each step, without technical detail.
+Keep her informed as you go.
 
 App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
 
@@ -21,9 +21,9 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
 
 1. **Check the folder is empty.** Run `ls -A`. Only these may be present:
    `.git`, `.gitignore`, `.gitattributes`, `.claude`. If anything else is
-   there, stop and explain: "This folder already has files in it. Please open
-   Claude Code in a new, empty folder (for example `mkdir my-app && cd my-app && claude`)
-   and run /app-builder:new-app again."
+   there, stop: she needs to open Claude Code in a new, empty folder (for
+   example `mkdir my-app && cd my-app && claude`) and run /app-builder:new-app
+   there.
 
 2. **Copy the template**, keeping any Claude Code settings already in the
    folder (for example the app-builder plugin installed for this project only),
@@ -39,8 +39,8 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
 
 3. **Setup questions, together.** First check `git config user.name` and
    `git config user.email`. Then ask what setup needs in one go:
-   - the app name, if none was given ("A short name is fine, you can change how
-     it's displayed later"),
+   - the app name, if none was given (a short one is fine; the displayed name
+     can change later),
    - the first admin's email,
    - the admin's username (offer one made from the email),
    - if either git value is empty: her name and email, used to sign each saved
@@ -79,7 +79,7 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
    - `CLAUDE.md`: `{{APP_NAME}}`, `{{APP_PORT}}`, `{{COMPOSE_PROJECT_NAME}}`,
      `{{SERVICES}}` → `none yet`, `{{ONE_LINE_DESCRIPTION}}` → her one-line
      description if you have it, else `(written after the discovery interview)`.
-   - `docs/SPEC.md`: `{{APP_NAME}}`. `docs/DECISIONS.md`: `{{DATE}}` (today,
+   - `docs/SPEC.md` and `docs/HOW_IT_WORKS.md`: `{{APP_NAME}}`. `docs/DECISIONS.md`: `{{DATE}}` (today,
      YYYY-MM-DD) and `{{APP_PORT}}`.
    - `.app-builder.json`: `app_name`, `app_port` (a number).
 
@@ -102,19 +102,19 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
     something fails, follow "When something is broken" in the rules and
     `${CLAUDE_PLUGIN_ROOT}/references/troubleshooting.md` before going on.
 
-11. **Tell her how to open it**: "Your app is running on port <port>. Charbel
-    will set up port forwarding for you; then open http://localhost:<port> and
-    log in with <admin email or username> and the password from step 7.
-    Please tell Charbel your app uses port <port>."
+11. **Tell her how to open it**: her app runs on port <port>; once Charbel
+    has set up port forwarding she opens http://localhost:<port> and logs in
+    with the admin email or username and the password she chose. She should
+    tell Charbel which port her app uses. It's also a natural moment to give
+    her the big picture of what's now running.
 
 ## Part 2: discovery
 
 12. **Interview** her, following `${CLAUDE_PLUGIN_ROOT}/references/interview-guide.md`.
 
 13. **Write `docs/SPEC.md`** from her answers, in her words. Fill the one-line
-    description in `CLAUDE.md`. Show her the key points and get her **explicit
-    approval** ("Does this describe your app? Anything to change?"). Mark it
-    approved in the spec's status line.
+    description in `CLAUDE.md`. Go through the key points with her and get
+    her **explicit approval**. Mark it approved in the spec's status line.
     - **Accounts:** the template lets anyone who can open the app sign
       themselves up. If she said only an admin creates accounts, closing
       sign-up (the "Sign up" link and page, and the `/users/signup` endpoint)
@@ -123,16 +123,14 @@ App name given: `$ARGUMENTS` (empty means: ask for it in step 3).
       she tries the idea out (`data_is_real` stays `false`), so later database
       changes don't need to ask again.
 
-14. **Screens first?** Ask (AskUserQuestion): "Would you like to see the main
-    screens first, with sample data, before I build the real thing?
-    (recommended)". If yes: build the main pages in the frontend only, with
-    clearly fake sample data in the page files (no backend, no database). Tell
-    her what to open and click, walk through the flow together, and update
-    SPEC.md from her feedback. Commit.
+14. **Screens first?** Offer to show her the main screens first, with sample
+    data, before building the real thing (recommend it: it's the cheapest way
+    to find out whether the flow is right). If she wants it: build the main pages in the frontend only, with
+    clearly fake sample data in the page files (no backend, no database). Walk
+    through the flow together, and update SPEC.md from her feedback. Commit.
 
-15. **Milestones.** Break the work into small milestones in business terms
-    ("1. Team members can log a visit. 2. Managers see all visits..."), each
-    something she can try in the browser. Write them in `docs/PROGRESS.md`
+15. **Milestones.** Break the work into small milestones in business terms,
+    each something she can try in the browser. Write them in `docs/PROGRESS.md`
     (Milestones checklist and Next) and get her OK. Commit.
 
-16. **Start milestone 1**, following "Handling any request" in the rules.
+16. **Start milestone 1**, following "Building" in the rules.

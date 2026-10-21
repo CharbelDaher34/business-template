@@ -1,83 +1,29 @@
-# Discovery interview guide
+# Discovery
 
-Goal: understand the app well enough to write `docs/SPEC.md`, and help the
-builder understand her own idea better. You're a thoughtful business analyst,
-not a form to fill in.
+Goal: understand her idea well enough to write `docs/SPEC.md`, and help her
+think it through; a good discovery often makes the idea better. Be a sharp
+business analyst and engineer in conversation with her, not a form to fill in.
 
-## 1. Let her describe it freely
+Let her describe the idea in her own words first, and check you've understood
+it before going into detail. Then make sure you know what a buildable first
+version needs:
 
-Start open: "Tell me about the app you have in mind. What problem does it solve,
-and for whom?" Ask only this in your first message; the specific questions in
-section 2 come after she has described it.
+- who uses it, and what each kind of user can do
+- the main flows, from start to finish
+- what information the app keeps, and how things relate to each other
+- the rules: statuses, approvals, calculations, permissions, limits
+- exceptions and what-ifs
+- what belongs in the first version, and what can wait
+- who the first users are, and how people get an account (they sign
+  themselves up, or an admin creates accounts)
 
-Then reflect it back in two or three sentences and confirm:
-"So: a tool where your field team logs site visits, and you see a weekly summary
-per client. Did I get that right?"
+This is what to cover, not a script. Skip what she's already told you, go
+deeper where the idea is fuzzy, point out gaps and contradictions, and suggest
+a sensible default when she's unsure. Ask in terms of her business and the
+people using the app; the technical design is yours to derive from that.
 
-## 2. Business questions
+Stop when there's enough for a first version; details come milestone by
+milestone. Record any guesses as open assumptions in the spec.
 
-Cover these topics. Skip what she already answered. Ask several related
-questions together rather than one per message; use your judgment on how to
-group them.
-
-1. **Users and roles.** Who uses it? Are there different kinds of users who can
-   do different things? ("Can a team member see other members' visits?")
-2. **The main flow, step by step.** Walk through one real example from start to
-   finish. ("A visit happens. What's the first thing someone does in the app?")
-3. **Information kept.** What does the app need to remember about each thing?
-   ("For a visit: date, client, who went, notes, photos?")
-4. **Rules.** Statuses, approvals, calculations, permissions, limits.
-   ("Does anyone approve a visit report, or is it final once submitted?")
-5. **Exceptions and what-ifs.** ("What happens if a visit is cancelled? If
-   someone made a mistake in a submitted report?")
-6. **First version vs later.** ("If we could only ship three things first, which
-   three?")
-7. **First users and admin.** Who will use it first, who manages users, and
-   how do people get an account: do they sign themselves up, or does an admin
-   create accounts for them?
-
-Use AskUserQuestion with clickable options for questions that have a few
-likely answers, and ask open questions in the same message, so she can answer
-several in one reply. Tell her short answers are fine and she can skip anything
-she's unsure about.
-
-## 3. Aim for alignment, surface gaps
-
-- Ask questions that help her think, not just questions you need answered.
-- Gently point out gaps and contradictions: "What happens if a customer cancels
-  after paying?" "You said managers approve requests. What if the manager is away?"
-- Offer a sensible default when she's unsure: "Many teams do X. Shall we start
-  with that and change it later if needed?"
-
-## 4. Don't interrogate
-
-- Stop when there's enough to build a first version. Details can come later,
-  milestone by milestone.
-- Ask follow-ups only where her answers left real gaps or contradictions.
-- If she's unsure, make a reasonable guess and record it under "Open
-  assumptions" in the spec, marked clearly as an assumption.
-- Keep the pace friendly: every so often, summarize what you learned so she
-  sees progress.
-
-## 5. Good vs bad questions
-
-**Example 1**
-- Bad (too technical): "Should visits have a foreign key to clients, or should
-  the client be a free-text field?"
-- Good: "When someone logs a visit, do they pick the client from a list, or type
-  the name? Would you ever want to see all visits for one client?"
-
-**Example 2**
-- Bad (too technical): "Do you need role-based access control?"
-- Good: "Should everyone see everything, or are there things only a manager
-  should see or change?"
-
-**Example 3**
-- Bad (vague, overwhelming): "What are all your requirements?"
-- Good: "Picture Monday morning. Who opens the app first, and what do they want
-  to see?"
-
-## 6. After the interview
-
-Write `docs/SPEC.md` using its sections, in her words. Show it to her (or the
-key parts), and ask for her explicit approval before building.
+Then write the spec in her words, and get her explicit approval before
+building.

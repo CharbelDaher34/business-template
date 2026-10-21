@@ -31,3 +31,4 @@ This file only holds what is specific to this app.
 - `frontend/src/`: `routes/` (pages), `components/`, `client/` (generated, never edit by hand).
 - `docs/SPEC.md`: what the app does. `docs/PROGRESS.md`: done, in progress, next, milestones.
 - `docs/DECISIONS.md`: dated decision log. `docs/QUESTIONS_FOR_CHARBEL.md`: open technical questions.
+- `docs/HOW_IT_WORKS.md`: map of how the app works, for the builder (features, glossary, how she likes to learn).
